@@ -1,0 +1,30 @@
+# --- Code to generate finalized_model.sav ---
+
+from pandas import read_csv
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from pickle import dump
+
+# 1. Load Data
+# This replicates the data loading step from your original script
+names = ['preg', 'plas', 'pres', 'skin', 'test', 'mass', 'pedi', 'age', 'class']
+data = read_csv('pima-indians-diabetes.csv', names=names)
+array = data.values
+X = array[:, 0:8]
+Y = array[:, 8]
+
+# 2. Train Model
+# This replicates the final model training step from your original script
+X_train, _, Y_train, _ = train_test_split(X, Y, test_size=0.33, random_state=7)
+model = LogisticRegression(max_iter=200)
+model.fit(X_train, Y_train)
+
+# 3. Save Model to .sav file (The critical step!)
+filename = 'finalized_model.sav'
+# FIX: The open function now correctly uses the 'filename' variable
+# Your original code had a typo: open('filename', 'wb') 
+dump(model, open(filename, 'wb')) 
+
+print(f"Successfully trained the Logistic Regression model and saved it as: {filename}")
+
+# Note: After running this, a new file named 'finalized_model.sav' will appear in your directory.
