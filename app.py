@@ -1,13 +1,13 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from pickle import load
-import os # Import os for better file path handling (optional but good practice)
+# from pickle import load # <-- REMOVE pickle
+import joblib # <-- USE joblib instead
+import os 
 
 # --- Model Loading and Prediction Logic ---
 
 # 1. Load the Saved Model
-# The model file must be present in the same directory.
 MODEL_FILE = 'finalized_model.sav'
 
 if not os.path.exists(MODEL_FILE):
@@ -16,9 +16,9 @@ if not os.path.exists(MODEL_FILE):
 
 @st.cache_resource
 def load_model():
-    """Loads the model from disk using Streamlit's resource caching."""
-    with open(MODEL_FILE, 'rb') as file:
-        loaded_model = load(file)
+    """Loads the model from disk using joblib for sklearn compatibility."""
+    # Load model using joblib.load
+    loaded_model = joblib.load(MODEL_FILE) 
     return loaded_model
 
 loaded_model = load_model()
@@ -61,7 +61,6 @@ st.dataframe(df_input)
 
 # 4. Perform Prediction
 if st.sidebar.button('Predict Diabetes'):
-    # Note: Your original model was trained on raw (non-scaled) features, so we pass raw input.
     prediction = loaded_model.predict(df_input.values)
     prediction_proba = loaded_model.predict_proba(df_input.values)
 
